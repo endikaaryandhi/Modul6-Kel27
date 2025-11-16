@@ -32,7 +32,7 @@ const RegistrationScreen = () => {
         'Registrasi Berhasil',
         'Silakan cek email Anda untuk verifikasi. (Jika verifikasi dinonaktifkan di Supabase, Anda bisa langsung login).'
       );
-      navigation.navigate('Login'); // Arahkan kembali ke login setelah registrasi
+      navigation.navigate('Login'); 
     } catch (error) {
       Alert.alert('Registrasi Gagal', error.message);
     } finally {

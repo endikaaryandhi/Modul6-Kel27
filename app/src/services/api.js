@@ -1,6 +1,6 @@
 import { supabase } from './supabase'; 
 
-// GANTI DENGAN ALAMAT IP LOKAL ANDA
+// GANTI DENGAN ALAMAT IP LOKAL 
 const API_URL = 'http://10.91.156.189:3000/api'; 
 
 export const Api = {
@@ -19,7 +19,7 @@ export const Api = {
   // Fungsi untuk RIWAYAT di ControlScreen
   async getThresholds(token) {
     try {
-      const response = await fetch(`${API_URL}/thresholds`, { // Panggil endpoint DAFTAR
+      const response = await fetch(`${API_URL}/thresholds`, { 
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,7 +36,7 @@ export const Api = {
   // Fungsi untuk NILAI SAAT INI di ControlScreen (CEPAT)
   async getLatestThreshold(token) {
     try {
-      const response = await fetch(`${API_URL}/thresholds/latest`, { // Panggil endpoint LATEST
+      const response = await fetch(`${API_URL}/thresholds/latest`, { 
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -6,13 +6,13 @@ import {
   StyleSheet,
   RefreshControl,
   ActivityIndicator,
-  Button, // Tetap digunakan untuk tombol "< Kembali"
+  Button,
   Alert,
-  TouchableOpacity, // Ditambahkan
+  TouchableOpacity,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useMqttSensor } from "../hooks/useMqttSensor.js";
-import { Api, supabase } from "../services/api.js"; // Impor keduanya
+import { Api, supabase } from "../services/api.js"; 
 import DataTable from "../components/DataTable.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from '../context/AuthContext'; 
@@ -241,20 +241,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  // --- STYLE BARU UNTUK TOMBOL PAGINATION ---
+
   paginationButton: {
-    backgroundColor: 'blue', // Warna biru default
+    backgroundColor: 'blue', 
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 5,
   },
   paginationButtonDisabled: {
-    backgroundColor: 'gray', // Warna abu-abu saat disabled
+    backgroundColor: 'gray',
   },
   paginationButtonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
   },
-  // ----------------------------------------
 });

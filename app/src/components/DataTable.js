@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
 
-// PERBAIKAN: Menggunakan Default Export
 export default function DataTable({ columns, data, keyExtractor }) {
   if (!columns?.length) {
     return null;

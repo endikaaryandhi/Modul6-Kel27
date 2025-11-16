@@ -1,7 +1,7 @@
 import { supabase } from "../config/supabaseClient.js";
 
 const TABLE = "sensor_readings";
-const PAGE_SIZE = 15; // Tentukan ukuran halaman (samakan di frontend)
+const PAGE_SIZE = 15; 
 
 function normalize(row) {
   if (!row) return row;
@@ -14,7 +14,7 @@ function normalize(row) {
 }
 
 export const ReadingsModel = {
-  async list(page = 1) { // Terima argumen page
+  async list(page = 1) {
     // Hitung rentang data
     const from = (page - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
@@ -23,7 +23,7 @@ export const ReadingsModel = {
       .from(TABLE)
       .select("id, temperature, threshold_value, recorded_at")
       .order("recorded_at", { ascending: false })
-      .range(from, to); // Ganti .limit(100) dengan .range()
+      .range(from, to); 
 
     if (error) throw error;
     return data.map(normalize);

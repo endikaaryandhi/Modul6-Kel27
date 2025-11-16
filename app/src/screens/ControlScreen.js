@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Api } from "../services/api.js";
-import DataTable from "../components/DataTable.js"; // Import default
+import DataTable from "../components/DataTable.js"; 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from '../context/AuthContext';
 
@@ -21,11 +21,11 @@ export default function ControlScreen() {
   // State untuk form (data cepat)
   const [thresholdValue, setThresholdValue] = useState(30);
   const [note, setNote] = useState("");
-  const [currentThreshold, setCurrentThreshold] = useState(null); // Nilai terbaru
+  const [currentThreshold, setCurrentThreshold] = useState(null); 
   
   // State untuk riwayat (data lambat)
   const [history, setHistory] = useState([]);
-  const [loadingHistory, setLoadingHistory] = useState(false); // Loading terpisah
+  const [loadingHistory, setLoadingHistory] = useState(false); 
 
   // State untuk UI
   const [submitting, setSubmitting] = useState(false);
@@ -77,11 +77,8 @@ export default function ControlScreen() {
       // Panggil keduanya saat layar fokus
       fetchLatest();
       fetchHistory();
-    }, [fetchLatest, fetchHistory]) // Gunakan DUA fungsi
+    }, [fetchLatest, fetchHistory])
   );
-
-  // Hapus useMemo, kita gunakan state 'currentThreshold'
-  // const latestThreshold = useMemo(() => history?.[0]?.value ?? null, [history]);
 
   const handleSubmit = useCallback(async () => {
     if (!session?.access_token) {

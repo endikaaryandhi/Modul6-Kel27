@@ -7,7 +7,7 @@ import {
   Text,
   Alert,
   ActivityIndicator,
-  TouchableOpacity, // Ditambahkan
+  TouchableOpacity, 
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
