@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export function DataTable({ columns, data, keyExtractor }) {
+// PERBAIKAN: Menggunakan Default Export
+export default function DataTable({ columns, data, keyExtractor }) {
   if (!columns?.length) {
     return null;
   }
@@ -16,7 +17,7 @@ export function DataTable({ columns, data, keyExtractor }) {
       </View>
       {data?.length ? (
         data.map((item, index) => (
-          <View key={keyExtractor ? keyExtractor(item, index) : index} style={styles.dataRow}>
+          <View key={keyExtractor ? keyExtractor(item, index) : item.id ?? index} style={styles.dataRow}>
             {columns.map((column) => (
               <Text key={column.key} style={styles.cell}>
                 {column.render ? column.render(item[column.key], item) : item[column.key]}

@@ -9,42 +9,86 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Api } from "../services/api.js";
-import { DataTable } from "../components/DataTable.js";
+import DataTable from "../components/DataTable.js"; // Import default
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from '../context/AuthContext';
 
-export function ControlScreen() {
+export default function ControlScreen() {
+  // State untuk form (data cepat)
   const [thresholdValue, setThresholdValue] = useState(30);
   const [note, setNote] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [currentThreshold, setCurrentThreshold] = useState(null); // Nilai terbaru
+  
+  // State untuk riwayat (data lambat)
   const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loadingHistory, setLoadingHistory] = useState(false); // Loading terpisah
 
-  const fetchHistory = useCallback(async () => {
-    setLoading(true);
+  // State untuk UI
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  
+  const { session } = useAuth();
+
+  // FUNGSI 1: Hanya mengambil nilai terbaru (CEPAT)
+  const fetchLatest = useCallback(async () => {
+    if (!session?.access_token) {
+      setError("Sesi tidak valid.");
+      return;
+    }
     setError(null);
     try {
-      const data = await Api.getThresholds();
+      const data = await Api.getLatestThreshold(session.access_token);
+      if (data && data.value) {
+        setCurrentThreshold(data.value);
+        // Set form input ke nilai yang ada
+        setThresholdValue(String(data.value)); 
+        setNote(data.note || "");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [session]);
+
+  // FUNGSI 2: Mengambil semua riwayat (LAMBAT)
+  const fetchHistory = useCallback(async () => {
+    if (!session?.access_token) {
+      setError("Sesi tidak valid.");
+      setLoadingHistory(false);
+      return;
+    }
+    setLoadingHistory(true);
+    setError(null);
+    try {
+      const data = await Api.getThresholds(session.access_token);
       setHistory(data ?? []);
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoadingHistory(false);
     }
-  }, []);
+  }, [session]);
 
   useFocusEffect(
     useCallback(() => {
+      // Panggil keduanya saat layar fokus
+      fetchLatest();
       fetchHistory();
-    }, [fetchHistory])
+    }, [fetchLatest, fetchHistory]) // Gunakan DUA fungsi
   );
 
-  const latestThreshold = useMemo(() => history?.[0]?.value ?? null, [history]);
+  // Hapus useMemo, kita gunakan state 'currentThreshold'
+  // const latestThreshold = useMemo(() => history?.[0]?.value ?? null, [history]);
 
   const handleSubmit = useCallback(async () => {
+    if (!session?.access_token) {
+      setError("Sesi tidak valid.");
+      return;
+    }
+
     const valueNumber = Number(thresholdValue);
     if (Number.isNaN(valueNumber)) {
       setError("Please enter a numeric threshold.");
@@ -54,15 +98,19 @@ export function ControlScreen() {
     setSubmitting(true);
     setError(null);
     try {
-      await Api.createThreshold({ value: valueNumber, note });
+      // Simpan threshold baru
+      await Api.createThreshold({ value: valueNumber, note }, session.access_token);
+      // Reset form
       setNote("");
+      // Muat ulang KEDUA data
+      await fetchLatest();
       await fetchHistory();
     } catch (err) {
       setError(err.message);
     } finally {
       setSubmitting(false);
     }
-  }, [thresholdValue, note, fetchHistory]);
+  }, [thresholdValue, note, fetchHistory, fetchLatest, session]); 
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
@@ -73,11 +121,17 @@ export function ControlScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
           <Text style={styles.title}>Configure Threshold</Text>
-          {latestThreshold !== null && (
+          
+          {/* PERBAIKAN: Gunakan state 'currentThreshold' */}
+          {currentThreshold !== null ? (
             <Text style={styles.metaText}>
-              Current threshold: {Number(latestThreshold).toFixed(2)}°C
+              Current threshold: {Number(currentThreshold).toFixed(2)}°C
             </Text>
+          ) : (
+            // Tampilan loading terpisah untuk nilai saat ini
+            <Text style={styles.metaText}>Memuat threshold...</Text>
           )}
+
           <Text style={styles.label}>Threshold (°C)</Text>
           <TextInput
             style={styles.input}
@@ -106,7 +160,8 @@ export function ControlScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Threshold History</Text>
-          {loading && <ActivityIndicator />}
+          {/* Gunakan loading riwayat yang terpisah */}
+          {loadingHistory && <ActivityIndicator />}
         </View>
         <DataTable
           columns={[
@@ -136,6 +191,7 @@ export function ControlScreen() {
   );
 }
 
+// (Styles Anda tetap sama persis)
 const styles = StyleSheet.create({
   container: {
     padding: 16,

@@ -10,4 +10,10 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
   throw new Error("Supabase environment variables are not set.");
 }
 
-export const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+// Tambahkan objek konfigurasi auth
+export const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
