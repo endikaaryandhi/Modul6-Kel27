@@ -58,6 +58,26 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY="[PUBLIC_SUPABASE_ANON_KEY_ANDA]"
 
 -----
 
+###  Konfigurasi IP Lokal
+#### 1\. Buka app/src/services/api.js di app, lalu ganti :
+```
+const API_URL = 'http://192.168.1.29:3000/api'; 
+```
+dengan IP lokal
+#### 2\. Buka app/app.json di app, lalu ganti :
+```
+"backendUrl": "http://192.168.1.29:3000",
+```
+dengan IP lokal
+
+-----
+
+###  Konfigurasi Policy Supabase agar tidak Confirm Email
+Buka Supabase lalu pergi ke Authentication lalu cari Sign In / Providers di Configuration 
+Matikan Confirm Email, agar saat registrasi akun tidak perlu confirm email
+
+-----
+
 ### 🚀 Menjalankan Aplikasi
 
 #### 1\. Menjalankan Backend API
@@ -70,6 +90,7 @@ npm run dev
 ```
 
 Server akan berjalan di port yang telah ditentukan (default biasanya **3000**).
+
 
 #### 2\. Menjalankan Sensor-Simulator
 
