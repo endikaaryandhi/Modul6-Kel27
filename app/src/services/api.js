@@ -1,7 +1,7 @@
 import { supabase } from './supabase'; 
 
 // GANTI DENGAN ALAMAT IP LOKAL 
-const API_URL = 'http://10.91.156.189:3000/api'; 
+const API_URL = 'http://192.168.1.29:3000/api'; 
 
 export const Api = {
   // Fungsi untuk MonitoringScreen
